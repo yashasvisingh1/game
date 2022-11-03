@@ -4,6 +4,7 @@ const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const port = process.env.PORT || 3000;
 const move_piece = require("./game");
+const mongoose=require("mongoose");
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
@@ -74,9 +75,3 @@ http.listen(port, () => {
   console.log(`Socket.IO server running at http://localhost:${port}/`);
 });
 
-// var roomno = 1;
-// io.on('connection', function(socket){
-//    socket.join("room-"+roomno);
-//    //Send this event to everyone in the room.
-//    io.sockets.in("room-"+roomno).emit('connectToRoom', "You are in room no. "+roomno);
-// })

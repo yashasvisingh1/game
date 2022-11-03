@@ -1,6 +1,5 @@
 module.exports=(
     move_piece
-
 )
 
 function roll_dice(){
