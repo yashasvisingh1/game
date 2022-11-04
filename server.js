@@ -136,29 +136,34 @@ let places=[
   }
 ]
 let clients = 0;
+
 let players = [{
   socket_id: 0,
   name: 1,
   curr_pos: 0,
-  money:300
+  money:300,
+  turn:1
 },
 {
   socket_id: 0,
   name: 2,
   curr_pos: 0,
-  money:300
+  money:300,
+  turn:0
 },
 {
   socket_id: 0,
   name: 3,
   curr_pos: 0,
-  money:300
+  money:300,
+  turn:0
 },
 {
   socket_id: 0,
   name: 4,
   curr_pos: 0,
-  money:300
+  money:300,
+  turn:0
 }
 ];
 var roomno = 1;
@@ -170,11 +175,12 @@ io.on("connection", function (socket) {
     clients++;
     console.log(players);
     socket.emit("begin_game");
+
     socket.on("move", function () {
       let i=0;
-      while (i<=clients) {
+      while (i<clients) {
         console.log(socket.id)
-        if (socket.id == players[i].socket_id) {
+        if (socket.id == players[i].socket_id && players[i].turn==1) {
           console.log(players[i].name + " moved");
           let a = move_piece(players[i].curr_pos);
           console.log(a);
@@ -184,6 +190,9 @@ io.on("connection", function (socket) {
             new_pos: a,
           });
           players[i].curr_pos = a;
+          players[i].turn = 0;
+          players[(i+1)%4].turn=1;
+          
           break;
         }
         i++;
