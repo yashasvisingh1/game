@@ -230,6 +230,7 @@ io.on("connection", function (socket) {
 
               players[i].money=players[i].money-places[a].price;
               places[a].ownership=player_name;
+              io.sockets.in("room-"+roomno).emit("update_stats",{player_name:players[i].name,place_name:places[a].cell});
               console.log(players);
               count++;
             }

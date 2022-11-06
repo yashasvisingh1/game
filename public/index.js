@@ -1,5 +1,12 @@
 var socket=io();
 
+let stats_player1=document.getElementById('stats_p1');
+let stats_player2=document.getElementById('stats_p2');
+let stats_player3=document.getElementById('stats_p3');
+let stats_player4=document.getElementById('stats_p4');
+
+stats=[stats_player1,stats_player2,stats_player3,stats_player4];
+
 function begin(){
     for(let i=1;i<24;i++){
 
@@ -38,3 +45,13 @@ socket.on("player_decision",function(player_name){
     }
 })
 
+function update_stats(player_name,place_name){
+    let item=document.createElement('li');
+    item.textContent=place_name;
+    let a=stats[player_name-1];
+    a.appendChild(item);
+}
+
+socket.on("update_stats",function(a){
+    update_stats(a.player_name,a.place_name);
+})
