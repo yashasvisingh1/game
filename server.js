@@ -3,12 +3,12 @@ const app = require("express")();
 const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const port = process.env.PORT || 3000;
-const move_piece = require("./game");
+const {move_piece,decision} = require("./game");
+const ejs = require("ejs");
 const mongoose=require("mongoose");
 
 app.set("view engine", "ejs");
 app.use(express.static("public"));
-const ejs = require("ejs");
 app.get("/", (req, res) => {
   res.render("monopoly_board");
 });
@@ -17,122 +17,146 @@ let places=[
   {
   cell:0,
   name:go,
-  price:0
+  price:0,
+  ownership:0
   },
   {
   cell:1,
   name:city,
-  price:60
+  price:60,
+  ownership:0
   },
   {
     cell:2,
     name:chest,
-    price:0
+    price:0,
+    ownership:0
   },
   {
     cell:3,
     name:city,
-    price:100
+    price:100,
+    ownership:0
   },
   {
     cell:4,
     name:chance,
-    price:0
+    price:0,
+    ownership:0
   },
   {
     cell:5,
     name:city,
-    price:120
+    price:120,
+    ownership:0
   },
   {
     cell:6,
     name:jail,
-    price:0
+    price:0,
+    ownership:0
   },
   {
     cell:7,
     name:city,
-    price:140
+    price:140,
+    ownership:0
   },
   {
     cell:8,
     name:company,
-    price:150
+    price:150,
+    ownership:0
   },
   {
     cell:9,
     name:city,
-    price:160
+    price:160,
+    ownership:0
   },
   {
     cell:10,
     name:chest,
-    price:0
+    price:0,
+    ownership:0
   },
   {
     cell:11,
     name:city,
-    price:200
+    price:200,
+    ownership:0
   },
   {
     cell:12,
     name:park,
-    price:0
+    price:0,
+    ownership:0
   },
   {
     cell:13,
     name:city,
-    price:220
+    price:220,
+    ownership:0
   },
   {
     cell:14,
     name:chance,
-    price:0
+    price:0,
+    ownership:0
   },
   {
     cell:15,
     name:city,
-    price:240
+    price:240,
+    ownership:0
   },
   {
     cell:16,
     name:company,
-    price:0
+    price:0,
+    ownership:0
   },
   {
     cell:17,
     name:city,
-    price:280
+    price:280,
+    ownership:0
   },
   {
     cell:18,
     name:go_jail,
-    price:0
+    price:0,
+    ownership:0
   },
   {
     cell:19,
     name:city,
-    price:300
+    price:300,
+    ownership:0
   },
   {
     cell:20,
     name:chest,
-    price:0
+    price:0,
+    ownership:0
   },
   {
     cell:21,
     name:city,
-    price:320
+    price:320,
+    ownership:0
   },
   {
     cell:22,
     name:chance,
-    price:0
+    price:0,
+    ownership:0
   },
   {
     cell:23,
     name:city,
-    price:400
+    price:400,
+    ownership:0
   }
 ]
 let clients = 0;
@@ -190,8 +214,29 @@ io.on("connection", function (socket) {
             new_pos: a,
           });
           players[i].curr_pos = a;
+        
+          let choice=decision(players[i].name,places[a].ownership,players[i].money,places[a].price,places[a].name);
+          console.log("hello "+choice);
+          let count=0;
+          if(choice==1){//rent case
+            players[i].money=players[i].money-(places[a].price*0.1);
+            players[places[a].ownership].money +=places[a].price*0.1;
+          }
+          if(choice==0){
+            io.to(socket.id).emit("player_decision",players[i].name);
+          }
+          socket.on("buy",function(player_name){
+            if(count<1&&choice==0){
+
+              players[i].money=players[i].money-places[a].price;
+              places[a].ownership=player_name;
+              console.log(players);
+              count++;
+            }
+          })
+
           players[i].turn = 0;
-          players[(i+1)%4].turn=1;
+          players[(i+1)%clients].turn=1;
           
           break;
         }

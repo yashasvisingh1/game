@@ -31,3 +31,10 @@ socket.on("update",function(a){
     update_position(a.name,a.curr_pos,a.new_pos);
 })
 
+socket.on("player_decision",function(player_name){
+        document.getElementById('button').onclick = function() {
+            console.log("button was clicked");
+            socket.emit("buy",player_name);
+    }
+})
+
