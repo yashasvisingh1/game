@@ -4,8 +4,13 @@ let stats_player1=document.getElementById('stats_p1');
 let stats_player2=document.getElementById('stats_p2');
 let stats_player3=document.getElementById('stats_p3');
 let stats_player4=document.getElementById('stats_p4');
+let player_money1=document.getElementById('player_money1');
+let player_money2=document.getElementById('player_money2');
+let player_money3=document.getElementById('player_money3');
+let player_money4=document.getElementById('player_money4');
 
-stats=[stats_player1,stats_player2,stats_player3,stats_player4];
+let stats=[stats_player1,stats_player2,stats_player3,stats_player4];
+let player_money=[player_money1,player_money2,player_money3,player_money4];
 
 function begin(){
     for(let i=1;i<24;i++){
@@ -15,6 +20,10 @@ function begin(){
         document.querySelector("#cell"+i+ " .p3").classList.add("hidden");
         document.querySelector("#cell"+i+ " .p4").classList.add("hidden");
     }
+    player_money1.textContent="Money: 300";
+    player_money2.textContent="Money: 300";
+    player_money3.textContent="Money: 300";
+    player_money4.textContent="Money: 300";
 }
 socket.on("begin_game",function(){
     begin();
@@ -54,4 +63,8 @@ function update_stats(player_name,place_name){
 
 socket.on("update_stats",function(a){
     update_stats(a.player_name,a.place_name);
+})
+
+socket.on("update_money",function(a){
+    player_money[a.player_name-1].textContent="Money: "+a.player_money;
 })

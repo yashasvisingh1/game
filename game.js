@@ -17,7 +17,7 @@ function move_piece(curr_pos){
 }
 
 function decision(player_name,ownership,money,price,place_name){
-    if(place_name=="city"){
+    if(place_name=="city" || place_name=="company"){
 
         if(player_name==ownership){
             return 3;//player already ownes the place
@@ -35,6 +35,6 @@ function decision(player_name,ownership,money,price,place_name){
             }
         }
     }else{
-        return 4;//not a city
+        return 4;
     }
 }
